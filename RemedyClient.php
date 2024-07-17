@@ -6,7 +6,6 @@
 
 namespace Remedy;
 
-use Remedy\CI\CiClientGroup;
 use Remedy\CPY\CompanyClientGroup;
 use Remedy\CRQ\CrClientGroup;
 
@@ -24,13 +23,6 @@ class RemedyClient
     public $changeRequests;
     public $cr;
 
-    /**
-     * Client for all Configuration Item transactions
-     *
-     * @var \Remedy\CI\CiClientGroup
-     */
-    public $configurationItems;
-    public $ci;
 
     /**
      * Client for all Company transactions
@@ -39,13 +31,6 @@ class RemedyClient
      */
     public $companies;
 
-
-    /**
-     * Client for relationship transactions
-     *
-     * @var \Remedy\RelationshipClient
-     */
-    public $relationships;
 
     /**
      * RemedyClient constructor
@@ -59,12 +44,9 @@ class RemedyClient
     {
         // Instantiate clients
         $this->changeRequests = new CrClientGroup($this, $rapidUrl, $key, $secret, $retries);
-        $this->configurationItems = new CiClientGroup($rapidUrl, $key, $secret, $retries);
         $this->companies = new CompanyClientGroup($rapidUrl, $key, $secret, $retries);
-        $this->relationships = new RelationshipClient($rapidUrl, $key, $secret, $retries);
 
         // Legacy aliases
-        $this->ci = $this->configurationItems;
         $this->cr = $this->changeRequests;
     }
 
@@ -89,11 +71,8 @@ class RemedyClient
     public function getClients()
     {
         return array_merge(
-            [
-                $this->relationships
-            ],
+            [],
             $this->changeRequests->getClients(),
-            $this->configurationItems->getClients(),
             $this->companies->getClients(),
         );
     }
